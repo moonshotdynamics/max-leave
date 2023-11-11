@@ -6,7 +6,7 @@ import optimizeLeaveDays from '@/utils/optimizeHolidays';
 
 interface Country {
   name: string;
-  code: string;
+  countryCode: string;
 }
 
 const Home = () => {
@@ -36,7 +36,7 @@ const sortedCountries = useMemo(() => {
     .map((country) => {
       return {
         name: country.name,
-        code: country.code,
+        code: country.countryCode,
       };
     })
     .sort((a, b) => a.name.localeCompare(b.name)); // Sort countries alphabetically
@@ -48,7 +48,7 @@ const sortedCountries = useMemo(() => {
     const selectedCountry = countries.find((c) => c.name === country);
 
     // If the country is found, use its code. Otherwise, default to 'US'
-    const countryCode = selectedCountry ? selectedCountry.code : 'US';
+    const countryCode = selectedCountry ? selectedCountry.countryCode : 'US';
 
     fetchPublicHolidays(countryCode, year)
       .then((holidays) => {
