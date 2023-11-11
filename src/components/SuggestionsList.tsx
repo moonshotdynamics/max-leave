@@ -8,10 +8,10 @@ interface SuggestedLeaveDay {
 }
 
 interface SuggestionsListProps {
-  suggestions: SuggestedLeaveDay[];
+  suggestions: string;
 }
 
-const SuggestionsList: React.FC<SuggestionsListProps> = ({ suggestions, year, leaveDays }) => {
+const SuggestionsList: React.FC<SuggestionsListProps> = ({ suggestions }) => {
   return (
     <div className="mt-10">
       <h3 className="text-lg leading-6 font-medium text-gray-900">

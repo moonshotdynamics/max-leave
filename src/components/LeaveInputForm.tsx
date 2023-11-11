@@ -1,21 +1,21 @@
 import React, { useState, FormEvent } from 'react';
 
 interface LeaveInputFormProps {
-  onSubmit: (leaveDays: number, country: { name: string }, year:number) => void;
-  countries: string[]; // This should come from a constant or an API
+  onSubmit: (leaveDays: number, country: string, year: number) => void;
+  countries: { name: string; code: string }[];
 }
 
 const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
   onSubmit,
   countries,
 }) => {
-  const [leaveDays, setLeaveDays] = useState<number>(null);
+  const [leaveDays, setLeaveDays] = useState<number>(0);
   const [country, setCountry] = useState<string>('');
   const [year, setYear] = useState<number>(new Date().getFullYear());
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSubmit(leaveDays, country, year);
+    onSubmit(leaveDays,country, year);
   };
 
   return (
@@ -69,7 +69,9 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
         >
           <option value="">Select a country</option>
           {countries.map((c) => (
+            //@ts-ignore
             <option key={c.code} value={c.name}>
+              {/* @ts-ignore */}
               {c.name}
             </option>
           ))}

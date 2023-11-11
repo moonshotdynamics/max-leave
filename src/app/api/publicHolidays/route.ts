@@ -1,11 +1,15 @@
 import { NextResponse, NextRequest } from 'next/server';
 
+interface Holiday {
+  date: string;
+  name: string;
+}
+
 export async function GET(req: NextRequest, res: NextResponse) {
    const url = new URL(req.url);
    const countryCode = url.searchParams.get('countryCode');
   const year = url.searchParams.get('year');
   
-  console.log(countryCode, year);
 
     try {
       const response = await fetch(
@@ -15,7 +19,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       console.log(data);
 
       if (response.ok) {
-        const holidays = data.map((holiday) => ({
+        const holidays = data.map((holiday: Holiday) => ({
           date: holiday.date,
           name: holiday.name,
         }));

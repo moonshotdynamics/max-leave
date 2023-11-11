@@ -4,15 +4,14 @@ import LeaveInputForm from '@/components/LeaveInputForm';
 import SuggestionsList from '@/components/SuggestionsList';
 import optimizeLeaveDays from '@/utils/optimizeHolidays';
 
-interface HomeProps {
-  data: [];
+interface Country {
+  name: string;
+  code: string;
 }
 
 const Home = () => {
-  const [suggestions, setSuggestions] = useState([]);
-  const [countries, setCountries] = useState([]);
-  const [year, setYear] = useState();
-  const [leaveDays, setLeaveDays] = useState();
+  const [suggestions, setSuggestions] = useState<string>('');
+  const [countries, setCountries] = useState<Country[]>([]);
 
   async function fetchPublicHolidays(countryCode: string, year: number) {
     const res = await fetch(
@@ -47,8 +46,6 @@ const sortedCountries = useMemo(() => {
   const handleFormSubmit = (leaveDays: number, country: string, year: number) => {
     // Find the country object from the countries state
     const selectedCountry = countries.find((c) => c.name === country);
-    setYear(year);
-    setLeaveDays(leaveDays);
 
     // If the country is found, use its code. Otherwise, default to 'US'
     const countryCode = selectedCountry ? selectedCountry.code : 'US';
@@ -69,7 +66,7 @@ const sortedCountries = useMemo(() => {
     <div className="container mx-auto px-4 bg-white">
       <h1 className="text-xl font-bold my-6">Leave Planner</h1>
       <LeaveInputForm onSubmit={handleFormSubmit} countries={sortedCountries} />
-      <SuggestionsList suggestions={suggestions} year={year} leaveDays={leaveDays} />
+      <SuggestionsList suggestions={suggestions} />
     </div>
   );
 };
