@@ -9,7 +9,8 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
   onSubmit,
   countries,
 }) => {
-  const [leaveDays, setLeaveDays] = useState<number>(0);
+  //@ts-ignore
+  const [leaveDays, setLeaveDays] = useState<number>('');
   const [country, setCountry] = useState<string>('');
   const [year, setYear] = useState<number>(new Date().getFullYear());
 
@@ -32,14 +33,15 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
           id="leaveDays"
           value={leaveDays}
           onChange={(e) => setLeaveDays(Number(e.target.value))}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 appearance-none"
           min="0"
+          style={{ appearance: 'textfield' }}
         />
       </div>
 
       <div>
         <label
-          htmlFor="leaveDays"
+          htmlFor="year"
           className="block text-sm font-medium text-gray-700"
         >
           What year are you planning for?
@@ -49,8 +51,9 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
           id="year"
           value={year}
           onChange={(e) => setYear(Number(e.target.value))}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 appearance-none"
           min="0"
+          style={{ appearance: 'textfield' }}
         />
       </div>
 
