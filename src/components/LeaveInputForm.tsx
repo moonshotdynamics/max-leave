@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from 'react';
 
 interface LeaveInputFormProps {
-  onSubmit: (leaveDays: number, country: string, year:number) => void;
+  onSubmit: (leaveDays: number, country: { name: string }, year:number) => void;
   countries: string[]; // This should come from a constant or an API
 }
 
@@ -9,7 +9,7 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
   onSubmit,
   countries,
 }) => {
-  const [leaveDays, setLeaveDays] = useState<number>(0);
+  const [leaveDays, setLeaveDays] = useState<number>(null);
   const [country, setCountry] = useState<string>('');
   const [year, setYear] = useState<number>(new Date().getFullYear());
 
@@ -25,7 +25,7 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
           htmlFor="leaveDays"
           className="block text-sm font-medium text-gray-700"
         >
-          Leave Days
+          How many leave days do you have?
         </label>
         <input
           type="number"
@@ -69,8 +69,8 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
         >
           <option value="">Select a country</option>
           {countries.map((c) => (
-            <option key={c} value={c}>
-              {c}
+            <option key={c.code} value={c.name}>
+              {c.name}
             </option>
           ))}
         </select>

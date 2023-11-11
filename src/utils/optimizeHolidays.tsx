@@ -4,81 +4,64 @@ interface PublicHoliday {
   name: string;
 }
 
-function optimizeLeaveDays(
+export default function optimizeLeaveDays(
   year: number,
   country: string,
   publicHolidays: PublicHoliday[],
   availableLeaveDays: number
-): string[] {
-  // Helper function to check if a date is a public holiday
-  const isPublicHoliday = (date: Date) =>
-    publicHolidays.some((holiday) => holiday.date === formatDate(date));
-
-  // Helper function to format a date as 'YYYY-MM-DD'
-  const formatDate = (date: Date) => date.toISOString().split('T')[0];
-
-  // Helper function to add days to a date
+): string {
+  // Helper functions
+  const formatDate = (date: Date) => `${date.toLocaleDateString('en-US', { weekday: 'long' })}, ${date.getDate()} ${date.toLocaleDateString('en-US', { month: 'long' })} ${date.getFullYear()}`;
+  const isWeekend = (date: Date) => date.getDay() === 0 || date.getDay() === 6;
   const addDays = (date: Date, days: number) => {
     const result = new Date(date);
     result.setDate(result.getDate() + days);
     return result;
   };
 
-  let optimizedDaysOff: string[] = [];
-  let tempDate: Date;
+  // Sort holidays by date
+  publicHolidays.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  for (const holiday of publicHolidays) {
-    const holidayDate = new Date(holiday.date);
-    const dayOfWeek = holidayDate.getDay();
+  // Initialize variables
+  let optimizedDaysOff = [];
+  let originalLeaveDays = availableLeaveDays;
+  let tempDate;
+
+  for (let holiday of publicHolidays) {
+    tempDate = new Date(holiday.date);
 
     // Check the day before the holiday
-    tempDate = addDays(holidayDate, -1);
-    if (
-      dayOfWeek !== 1 &&
-      availableLeaveDays > 0 &&
-      !isPublicHoliday(tempDate)
-    ) {
-      optimizedDaysOff.push(formatDate(tempDate));
+    let dayBefore = addDays(tempDate, -1);
+    if (!isWeekend(dayBefore) && availableLeaveDays > 0) {
+      optimizedDaysOff.push(dayBefore);
       availableLeaveDays--;
     }
 
-    // Always add the public holiday
-    optimizedDaysOff.push(formatDate(holidayDate));
-
     // Check the day after the holiday
-    tempDate = addDays(holidayDate, 1);
-    if (
-      dayOfWeek !== 0 &&
-      availableLeaveDays > 0 &&
-      !isPublicHoliday(tempDate)
-    ) {
-      optimizedDaysOff.push(formatDate(tempDate));
+    let dayAfter = addDays(tempDate, 1);
+    if (!isWeekend(dayAfter) && availableLeaveDays > 0) {
+      optimizedDaysOff.push(dayAfter);
       availableLeaveDays--;
     }
   }
 
-  // Sort the dates to be in chronological order
-  optimizedDaysOff.sort(
-    (a, b) => new Date(a).getTime() - new Date(b).getTime()
-  );
+  // Sort optimized days off
+  optimizedDaysOff.sort((a, b) => a.getTime() - b.getTime());
 
-  return optimizedDaysOff;
+  // Formatting the result
+  let recommendation = `To optimize your ${originalLeaveDays} leave days for ${year}, I recommend you take the following days off: `;
+
+  for (let i = 0; i < optimizedDaysOff.length; i++) {
+    recommendation += `\n- ${formatDate(optimizedDaysOff[i])}`;
+  }
+
+  let optimizedLeave = originalLeaveDays + optimizedDaysOff.length;
+  recommendation += `\n\nAs a result of taking the following leave days, you have optimized your leave days from ${originalLeaveDays} days to a total of ${optimizedLeave} days for the year.`;
+
+  console.log(recommendation);
+
+  return recommendation;
 }
 
-// Example usage:
-const year = 2023;
-const country = 'US';
-const publicHolidays: PublicHoliday[] = [
-  // This should be replaced with actual public holiday data
-  { date: '2023-01-01', name: "New Year's Day" },
-  // ... other holidays
-];
-const availableLeaveDays = 10;
 
-const optimizedLeave = optimizeLeaveDays(
-  year,
-  country,
-  publicHolidays,
-  availableLeaveDays
-);
-console.log(optimizedLeave);
+

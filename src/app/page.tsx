@@ -1,11 +1,8 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import LeaveInputForm from '@/components/LeaveInputForm';
 import SuggestionsList from '@/components/SuggestionsList';
-
-
-
-
+import optimizeLeaveDays from '@/utils/optimizeHolidays';
 
 interface HomeProps {
   data: [];
@@ -14,6 +11,8 @@ interface HomeProps {
 const Home = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [countries, setCountries] = useState([]);
+  const [year, setYear] = useState();
+  const [leaveDays, setLeaveDays] = useState();
 
   async function fetchPublicHolidays(countryCode: string, year: number) {
     const res = await fetch(
@@ -25,42 +24,52 @@ const Home = () => {
     return await res.json();
   }
 
-  useEffect(() => {
-    async function fetchCountries() {
-      const res = await fetch('/api/countries');
-      const data = await res.json();
-      setCountries(data);
-    }
+useEffect(() => {
+  (async function fetchCountries() {
+    const res = await fetch('/api/countries');
+    const data = await res.json();
+    setCountries(data);
+  })().catch(console.error);
+}, []);
 
-    fetchCountries().catch(console.error);
-  }, []);
+const sortedCountries = useMemo(() => {
+  return countries
+    .map((country) => {
+      return {
+        name: country.name,
+        code: country.code,
+      };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name)); // Sort countries alphabetically
+}, [countries]);
+
 
   const handleFormSubmit = (leaveDays: number, country: string, year: number) => {
-    // Call the API and set suggestions with the response data
-    console.log(leaveDays, country);
-    // For now, we'll just simulate the suggestions
+    // Find the country object from the countries state
+    const selectedCountry = countries.find((c) => c.name === country);
+    setYear(year);
+    setLeaveDays(leaveDays);
 
-    fetchPublicHolidays(country, year)
+    // If the country is found, use its code. Otherwise, default to 'US'
+    const countryCode = selectedCountry ? selectedCountry.code : 'US';
+
+    fetchPublicHolidays(countryCode, year)
       .then((holidays) => {
-        console.log(holidays); // Do something with the holidays
+        console.log(holidays, 'HERE');
+        optimizeLeaveDays(year, country, holidays, leaveDays);
+        setSuggestions(optimizeLeaveDays(year, country, holidays, leaveDays));
       })
       .catch((error) => {
         console.error(error.message); // Handle errors
       });
-    setSuggestions([
-      { leaveDate: '2023-12-24', reason: 'Long weekend - Christmas Eve' },
-      { leaveDate: '2023-04-07', reason: 'Extended holiday - Good Friday' },
-      // ... more suggestions
-    ]);
   };
 
 
-
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 bg-white">
       <h1 className="text-xl font-bold my-6">Leave Planner</h1>
-      <LeaveInputForm onSubmit={handleFormSubmit} countries={countries} />
-      <SuggestionsList suggestions={suggestions} />
+      <LeaveInputForm onSubmit={handleFormSubmit} countries={sortedCountries} />
+      <SuggestionsList suggestions={suggestions} year={year} leaveDays={leaveDays} />
     </div>
   );
 };
