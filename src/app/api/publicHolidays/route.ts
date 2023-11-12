@@ -4,7 +4,6 @@ interface Holiday {
   date: string;
   name: string;
 }
-
 export async function GET(req: NextRequest, res: NextResponse) {
   const url = new URL(req.url);
   const countryCode = url.searchParams.get('countryCode');

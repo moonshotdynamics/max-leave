@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Leave Maximiser',
-  description: 'Your new favorite tool for managing leaves',
+  title: 'Leave Maximizer',
+  description: 'Your new favorite tool for maximizing your leave',
 };
 
 export default function RootLayout({
