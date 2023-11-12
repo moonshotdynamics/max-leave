@@ -14,15 +14,45 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
   countries,
   leaveDays,
   setLeaveDays,
-  year, 
-  setYear
+  year,
+  setYear,
 }) => {
   const [country, setCountry] = useState<string>('');
+  const [leaveDaysError, setLeaveDaysError] = useState<string>('');
+  const [yearError, setYearError] = useState<string>('');
+
+  const handleLeaveDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    setLeaveDays(value);
+
+    if (value <= 0) {
+      setLeaveDaysError('Leave days must be greater than 0.');
+    } else {
+      setLeaveDaysError('');
+    }
+  };
+
+  const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    setYear(value);
+
+    const currentYear = new Date().getFullYear();
+    if (value < currentYear) {
+      setYearError('Year must be the current year or a future year.');
+    } else {
+      setYearError('');
+    }
+  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSubmit(leaveDays,country, year);
+
+    if (leaveDaysError === '' && yearError === '') {
+      onSubmit(leaveDays, country, year);
+    }
   };
+
+  const isSubmitDisabled = leaveDaysError !== '' || yearError !== '';
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
@@ -37,11 +67,14 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
           type="number"
           id="leaveDays"
           value={leaveDays}
-          onChange={(e) => setLeaveDays(Number(e.target.value))}
+          onChange={handleLeaveDaysChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           min="0"
           placeholder="21"
         />
+        {leaveDaysError && (
+          <p className="text-red-500 text-xs italic">{leaveDaysError}</p>
+        )}
       </div>
 
       <div>
@@ -55,11 +88,13 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
           type="number"
           id="year"
           value={year}
-          onChange={(e) => setYear(Number(e.target.value))}
+          onChange={handleYearChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           min="0"
-
         />
+        {yearError && (
+          <p className="text-red-500 text-xs italic">{yearError}</p>
+        )}
       </div>
 
       <div>
@@ -77,9 +112,7 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
         >
           <option value="">Select a country</option>
           {countries.map((c) => (
-            //@ts-ignore
             <option key={c.code} value={c.name}>
-              {/* @ts-ignore */}
               {c.name}
             </option>
           ))}
@@ -88,7 +121,10 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
 
       <button
         type="submit"
-        className="mt-2 p-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:border-indigo-700 focus:ring focus:ring-indigo-200 active:bg-indigo-700 transition"
+        className={`mt-2 p-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:border-indigo-700 focus:ring focus:ring-indigo-200 active:bg-indigo-700 transition ${
+          isSubmitDisabled ? 'opacity-50 cursor-not-allowed' : ''
+        }`}
+        disabled={isSubmitDisabled}
       >
         Calculate Best Leave Days
       </button>
