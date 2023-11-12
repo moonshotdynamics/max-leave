@@ -4,14 +4,25 @@ interface PublicHoliday {
   name: string;
 }
 
+interface OptimizeLeaveDaysResult {
+  days: string[];
+  totalLeaveDays: number;
+  timelineItems: any[];
+  timelineGroups: any[];
+}
+
 export default function optimizeLeaveDays(
   year: number,
-  country: string,
   publicHolidays: PublicHoliday[],
   availableLeaveDays: number
-): string {
+): OptimizeLeaveDaysResult {
   // Helper functions
-  const formatDate = (date: Date) => `${date.toLocaleDateString('en-US', { weekday: 'long' })}, ${date.getDate()} ${date.toLocaleDateString('en-US', { month: 'long' })} ${date.getFullYear()}`;
+  const formatDate = (date: Date) =>
+    `${date.toLocaleDateString('en-US', {
+      weekday: 'long',
+    })}, ${date.getDate()} ${date.toLocaleDateString('en-US', {
+      month: 'long',
+    })} ${date.getFullYear()}`;
   const isWeekend = (date: Date) => date.getDay() === 0 || date.getDay() === 6;
   const addDays = (date: Date, days: number) => {
     const result = new Date(date);
@@ -20,7 +31,9 @@ export default function optimizeLeaveDays(
   };
 
   // Sort holidays by date
-  publicHolidays.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  publicHolidays.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
 
   // Initialize variables
   let optimizedDaysOff = [];
@@ -51,17 +64,25 @@ export default function optimizeLeaveDays(
   // Formatting the result
   let recommendation = `To optimize your ${originalLeaveDays} leave days for ${year}, I recommend you take the following days off: `;
 
+  let days = [];
+
   for (let i = 0; i < optimizedDaysOff.length; i++) {
-    recommendation += `\n- ${formatDate(optimizedDaysOff[i])}`;
+    days.push(formatDate(optimizedDaysOff[i]));
+    // recommendation += `\n- ${formatDate(optimizedDaysOff[i])}`;
   }
 
-  let optimizedLeave = originalLeaveDays + optimizedDaysOff.length;
-  recommendation += `\n\nAs a result of taking the following leave days, you have optimized your leave days from ${originalLeaveDays} days to a total of ${optimizedLeave} days for the year.`;
+  const timelineItems = optimizedDaysOff.map((day, index) => ({
+    id: index + 1,
+    group: 1,
+    start_time: day,
+    end_time: addDays(day, 1),
+    title: 'Leave Day',
+  }));
 
-  console.log(recommendation);
+  const timelineGroups = [{ id: 1, title: 'Leave Days' }];
 
-  return recommendation;
+  let totalLeaveDays = originalLeaveDays + optimizedDaysOff.length;
+  recommendation += `\n\nAs a result of taking the following leave days, you have optimized your leave days from ${originalLeaveDays} days to a total of ${totalLeaveDays} days for the year.`;
+
+  return { days, totalLeaveDays, timelineItems, timelineGroups };
 }
-
-
-

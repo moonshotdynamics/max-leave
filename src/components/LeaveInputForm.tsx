@@ -3,16 +3,21 @@ import React, { useState, FormEvent } from 'react';
 interface LeaveInputFormProps {
   onSubmit: (leaveDays: number, country: string, year: number) => void;
   countries: { name: string; code: string }[];
+  leaveDays: number;
+  setLeaveDays(leaveDays: number): void;
+  year: number;
+  setYear(year: number): void;
 }
 
 const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
   onSubmit,
   countries,
+  leaveDays,
+  setLeaveDays,
+  year, 
+  setYear
 }) => {
-  //@ts-ignore
-  const [leaveDays, setLeaveDays] = useState<number>('');
   const [country, setCountry] = useState<string>('');
-  const [year, setYear] = useState<number>(new Date().getFullYear());
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -33,9 +38,9 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
           id="leaveDays"
           value={leaveDays}
           onChange={(e) => setLeaveDays(Number(e.target.value))}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 appearance-none"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           min="0"
-          style={{ appearance: 'textfield' }}
+          placeholder="21"
         />
       </div>
 
@@ -51,9 +56,9 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
           id="year"
           value={year}
           onChange={(e) => setYear(Number(e.target.value))}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 appearance-none"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           min="0"
-          style={{ appearance: 'textfield' }}
+
         />
       </div>
 
@@ -68,7 +73,7 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
           id="country"
           value={country}
           onChange={(e) => setCountry(e.target.value)}
-          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm shadow appearance-none border rounded"
         >
           <option value="">Select a country</option>
           {countries.map((c) => (
