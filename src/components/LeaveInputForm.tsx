@@ -102,7 +102,7 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           id="leaveDays"
           value={leaveDays}
           onChange={handleLeaveDaysChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-lightPink focus:shadow-outline"
           min="0"
           placeholder="21"
         />
@@ -124,7 +124,7 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             id="startDate"
             value={startDate}
             onChange={handleYearChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-lightPink focus:shadow-outline"
           />
           {yearError && (
             <p className="text-red-500 text-xs italic">{yearError}</p>
@@ -143,7 +143,7 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             id="endDate"
             value={endDate}
             onChange={handleEndDate}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-lightPink focus:shadow-outline"
           />
           {yearError && (
             <p className="text-red-500 text-xs italic">{yearError}</p>
@@ -162,7 +162,7 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           id="country"
           value={country}
           onChange={(e) => setCountry(e.target.value)}
-          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm shadow appearance-none border rounded"
+          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-lightPink focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm shadow appearance-none border rounded"
         >
           <option value="">Select a country</option>
           {countries.map((c) => (
@@ -175,7 +175,7 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
       <button
         type="submit"
-        className={`mt-2 p-2 border border-transparent text-sm font-medium rounded-md text-white bg-brightPink hover:bg-lightPink focus:outline-none focus:border-indigo-700 focus:ring focus:ring-indigo-200 active:bg-brightPink transition ${
+        className={`mt-2 p-2 border border-transparent text-sm font-medium rounded-md text-white bg-brightPink hover:bg-lightPink focus:outline-lightPink focus:border-indigo-700 focus:ring focus:ring-indigo-200 active:bg-brightPink transition ${
           isSubmitDisabled ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         disabled={isSubmitDisabled}
