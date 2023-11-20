@@ -22,6 +22,8 @@ const Home = () => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [leaveDays, setLeaveDays] = useState<number>();
   const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [startDate, setStartDate] = useState<string>('');
+
 
   async function fetchPublicHolidays(countryCode: string, year: number) {
     const res = await fetch(
@@ -63,7 +65,7 @@ const Home = () => {
 
     try {
       const holidays = await fetchPublicHolidays(countryCode, year);
-      setSuggestions(optimizeLeaveDays(year, holidays, leaveDays));
+      setSuggestions(optimizeLeaveDays(holidays, leaveDays, startDate));
     } catch (error: any) {
       toastError(error.message);
       console.error(error.message);
@@ -81,6 +83,8 @@ const Home = () => {
         year={year}
         setLeaveDays={setLeaveDays}
         setYear={setYear}
+        setStartDate={setStartDate}
+        startDate={startDate}
       />
       {suggestions?.days && (
         <SuggestionsList

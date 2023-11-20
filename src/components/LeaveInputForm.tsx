@@ -1,12 +1,14 @@
 import React, { useState, FormEvent } from 'react';
 
 interface LeaveInputFormProps {
-  onSubmit: (leaveDays: number, country: string, year: number) => void;
+  onSubmit: (leaveDays: number, country: string, year: number, startDate: string) => void;
   countries: { name: string; code: string }[];
   leaveDays: number;
   setLeaveDays(leaveDays: number): void;
   year: number;
   setYear(year: number): void;
+  startDate: string;
+  setStartDate(startDate: string): void;
 }
 
 const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
@@ -16,10 +18,14 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
   setLeaveDays,
   year,
   setYear,
+  startDate,
+  setStartDate
 }) => {
   const [country, setCountry] = useState<string>('');
   const [leaveDaysError, setLeaveDaysError] = useState<string>('');
   const [yearError, setYearError] = useState<string>('');
+
+  
 
   const handleLeaveDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -32,23 +38,25 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
     }
   };
 
-  const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    setYear(value);
+const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const startDate = new Date(e.target.value);
+  const year = startDate.getFullYear();
+  setYear(year);
+  setStartDate(e.target.value);
 
-    const currentYear = new Date().getFullYear();
-    if (value < currentYear) {
-      setYearError('Year must be the current year or a future year.');
-    } else {
-      setYearError('');
-    }
-  };
+  const currentYear = new Date().getFullYear();
+  if (year < currentYear) {
+    setYearError('Year must be the current year or a future year.');
+  } else {
+    setYearError('');
+  }
+};
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     if (leaveDaysError === '' && yearError === '') {
-      onSubmit(leaveDays, country, year);
+      onSubmit(leaveDays, country, year, startDate);
     }
   };
 
@@ -79,18 +87,17 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
 
       <div>
         <label
-          htmlFor="year"
+          htmlFor="startDate"
           className="block text-sm font-medium text-gray-700"
         >
-          What year are you planning for?
+          Start Date
         </label>
         <input
-          type="number"
-          id="year"
-          value={year}
+          type="date"
+          id="startDate"
+          value={startDate}
           onChange={handleYearChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          min="0"
         />
         {yearError && (
           <p className="text-red-500 text-xs italic">{yearError}</p>

@@ -1,4 +1,3 @@
-// Assuming this is the structure of your public holiday data
 interface PublicHoliday {
   date: string; // in the format 'YYYY-MM-DD'
   name: string;
@@ -10,13 +9,13 @@ interface OptimizeLeaveDaysResult {
   timelineItems: any[];
   timelineGroups: any[];
 }
-
 export default function optimizeLeaveDays(
-  year: number,
   publicHolidays: PublicHoliday[],
-  availableLeaveDays: number
+  availableLeaveDays: number,
+  startDate: string
 ): OptimizeLeaveDaysResult {
   // Helper functions
+  const startOptimizationDate = new Date(startDate);
   const formatDate = (date: Date) =>
     `${date.toLocaleDateString('en-US', {
       weekday: 'long',
@@ -29,32 +28,82 @@ export default function optimizeLeaveDays(
     result.setDate(result.getDate() + days);
     return result;
   };
+  const isPublicHoliday = (date: Date) => {
+    const dateString = date.toISOString().split('T')[0]; // Get date in 'YYYY-MM-DD' format
+    return publicHolidays.some((holiday) => holiday.date === dateString);
+  };
 
   // Sort holidays by date
   publicHolidays.sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
+  // Group holidays that are close together
+  let holidayGroups = [];
+  let currentGroup = [];
+  for (let i = 0; i < publicHolidays.length; i++) {
+    currentGroup.push(publicHolidays[i]);
+    if (
+      i === publicHolidays.length - 1 ||
+      new Date(publicHolidays[i + 1].date).getTime() -
+        new Date(publicHolidays[i].date).getTime() >
+        1000 * 60 * 60 * 24 * 2
+    ) {
+      holidayGroups.push(currentGroup);
+      currentGroup = [];
+    }
+  }
+
   // Initialize variables
   let optimizedDaysOff = [];
   let originalLeaveDays = availableLeaveDays;
-  let tempDate;
 
-  for (let holiday of publicHolidays) {
-    tempDate = new Date(holiday.date);
+  for (let group of holidayGroups) {
+    let firstHoliday = new Date(group[0].date);
+    let lastHoliday = new Date(group[group.length - 1].date);
 
-    // Check the day before the holiday
-    let dayBefore = addDays(tempDate, -1);
-    if (!isWeekend(dayBefore) && availableLeaveDays > 0) {
+    // Skip the group if it's before the start date
+    if (lastHoliday < startOptimizationDate) continue;
+
+    // Check the days before and after the group
+    let dayBefore = addDays(firstHoliday, -1);
+    let dayAfter = addDays(lastHoliday, 1);
+    while (
+      availableLeaveDays > 0 &&
+      dayBefore >= startOptimizationDate && // Skip days before the start date
+      !isWeekend(dayBefore) &&
+      !isPublicHoliday(dayBefore) &&
+      !(dayBefore.getDay() === 5 && firstHoliday.getDay() === 6)
+    ) {
       optimizedDaysOff.push(dayBefore);
       availableLeaveDays--;
+      dayBefore = addDays(dayBefore, -1); // Move to the previous day
     }
-
-    // Check the day after the holiday
-    let dayAfter = addDays(tempDate, 1);
-    if (!isWeekend(dayAfter) && availableLeaveDays > 0) {
+    while (
+      availableLeaveDays > 0 &&
+      dayAfter >= startOptimizationDate && // Skip days before the start date
+      !isWeekend(dayAfter) &&
+      !isPublicHoliday(dayAfter)
+    ) {
       optimizedDaysOff.push(dayAfter);
       availableLeaveDays--;
+      dayAfter = addDays(dayAfter, 1); // Move to the next day
+    }
+  }
+
+  // Calculate totalLeaveDays after excluding days before the start date
+  let totalLeaveDays = originalLeaveDays - availableLeaveDays;
+
+  // Count the number of public holidays and weekends within the optimized days off
+  let firstDayOff = optimizedDaysOff[0];
+  let lastDayOff = optimizedDaysOff[optimizedDaysOff.length - 1];
+  for (
+    let d = new Date(firstDayOff);
+    d <= lastDayOff;
+    d.setDate(d.getDate() + 1)
+  ) {
+    if (isPublicHoliday(d)) {
+      totalLeaveDays++;
     }
   }
 
@@ -62,13 +111,10 @@ export default function optimizeLeaveDays(
   optimizedDaysOff.sort((a, b) => a.getTime() - b.getTime());
 
   // Formatting the result
-  let recommendation = `To optimize your ${originalLeaveDays} leave days for ${year}, I recommend you take the following days off: `;
-
   let days = [];
 
   for (let i = 0; i < optimizedDaysOff.length; i++) {
     days.push(formatDate(optimizedDaysOff[i]));
-    // recommendation += `\n- ${formatDate(optimizedDaysOff[i])}`;
   }
 
   const timelineItems = optimizedDaysOff.map((day, index) => ({
@@ -80,9 +126,6 @@ export default function optimizeLeaveDays(
   }));
 
   const timelineGroups = [{ id: 1, title: 'Leave Days' }];
-
-  let totalLeaveDays = originalLeaveDays + optimizedDaysOff.length;
-  recommendation += `\n\nAs a result of taking the following leave days, you have optimized your leave days from ${originalLeaveDays} days to a total of ${totalLeaveDays} days for the year.`;
 
   return { days, totalLeaveDays, timelineItems, timelineGroups };
 }
