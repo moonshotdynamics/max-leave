@@ -128,7 +128,7 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
       <button
         type="submit"
-        className={`mt-2 p-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:border-indigo-700 focus:ring focus:ring-indigo-200 active:bg-indigo-700 transition ${
+        className={`mt-2 p-2 border border-transparent text-sm font-medium rounded-md text-white bg-brightPink hover:bg-lightPink focus:outline-none focus:border-indigo-700 focus:ring focus:ring-indigo-200 active:bg-indigo-700 transition ${
           isSubmitDisabled ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         disabled={isSubmitDisabled}

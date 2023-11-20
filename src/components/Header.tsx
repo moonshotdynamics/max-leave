@@ -30,7 +30,7 @@ const Header = () => {
               <Image src={logo} alt="logo" height={40} width={50} />
               <Link
                 href="/"
-                className="text-2xl font-bold text-white hover:text-gray-200 ml-2"
+                className="text-2xl font-bold text-white hover:text-lightPink ml-2"
               >
                 Leave Maximizer
               </Link>
@@ -40,8 +40,8 @@ const Header = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`px-3 py-2 text-white hover:text-gray-200 font-medium ${
-                    isActive(item.href) && 'text-brightPink'
+                  className={`px-3 py-2 hover:text-lightPink font-medium ${
+                    isActive(item.href) ? 'text-brightPink' : 'text-white'
                   }`}
                 >
                   {item.name}
@@ -51,7 +51,7 @@ const Header = () => {
             <div className="md:hidden">
               {/* Mobile menu button */}
               <Popover.Button
-                className="text-white hover:text-gray-300 focus:outline-none focus:text-gray-300"
+                className="text-white hover:text-lightPink focus:outline-none focus:text-gray-300"
                 aria-label="toggle menu"
               >
                 <span className="sr-only">Open main menu</span>
@@ -103,7 +103,7 @@ const Header = () => {
                       <Image className="h-8 w-auto" src={logo} alt="logo" />
                     </div>
                     <div className="-mr-2">
-                      <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                      <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-lightPink hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                         <span className="sr-only">Close menu</span>
                         <svg
                           className="h-6 w-6"

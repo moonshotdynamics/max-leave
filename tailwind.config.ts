@@ -19,6 +19,7 @@ const config: Config = {
         },
         mutedTurquoise: 'rgb(155, 188, 181)',
         brightPink: 'rgb(246, 98, 128)',
+        lightPink: 'rgb(255, 204, 204)',
         mediumTurquoise: 'rgb(87, 168, 159)',
         lightGray: 'rgb(204, 208, 204)',
       },

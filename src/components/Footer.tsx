@@ -14,8 +14,8 @@ const Footer = () => {
             rel="noopener noreferrer"
             className="text-sm text-white hover:text-yellow-300 transition-colors duration-300"
           >
-            <div className="flex items-center">
-              <span role="img" aria-label="coffee" className="w-5 h-5 mr-2">
+            <div className="flex items-center font-bold">
+              <span role="img" aria-label="coffee" className="w-5 h-5 mr-2 ">
                 ☕
               </span>
               Buy Me a Coffee

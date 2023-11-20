@@ -28,16 +28,12 @@ const HeroSection = () => {
           >
             Leave Maximizer
           </h1>
-          <p className="text-xl" style={{ color: colors.teal }}>
+          <p className="text-xl text-white">
             Maximize your leave days efficiently
           </p>
           <button
             onClick={() => router.push('/calculate')}
-            className="px-6 py-2 rounded-md shadow transition"
-            style={{
-              backgroundColor: colors.brightPink,
-              color: '#FFFFFF',
-            }}
+            className="px-6 py-2 rounded-md shadow transition hover:bg-lightPink bg-brightPink text-white"
           >
             Calculate Your Leave
           </button>
@@ -59,16 +55,12 @@ const HeroSection = () => {
             >
               Leave Maximizer
             </h1>
-            <p className="text-xl" style={{ color: colors.teal }}>
+            <p className="text-xl text-white">
               Maximize your leave days efficiently
             </p>
             <button
               onClick={() => router.push('/calculate')}
-              className="px-6 py-2 rounded-md shadow transition"
-              style={{
-                backgroundColor: colors.brightPink,
-                color: '#FFFFFF',
-              }}
+              className="px-6 py-2 rounded-md shadow transition hover:bg-lightPink bg-brightPink text-white"
             >
               Calculate Your Leave
             </button>
