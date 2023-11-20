@@ -17,8 +17,6 @@ const Header = () => {
   // Determines if a link is the current page
   const routerPathname = usePathname();
   const isActive = (pathname: string) => routerPathname === pathname;
-  console.log(routerPathname)
-  console.log(isActive(routerPathname))
 
   return (
     <Popover
