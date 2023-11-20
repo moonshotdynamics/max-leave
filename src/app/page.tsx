@@ -47,7 +47,7 @@ const HeroSection = () => {
           objectFit="cover"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="md:hidden absolute inset-0 flex flex-col items-center justify-center text-white p-8">
+        <div className="md:hidden absolute inset-0 flex flex-col items-center mt-[50%] text-white p-8">
           <div className="space-y-4 text-center">
             <h1
               className="text-4xl font-bold"
