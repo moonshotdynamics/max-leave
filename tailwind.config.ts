@@ -13,8 +13,17 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      colors: {
+        teal: {
+          DEFAULT: 'rgb(5, 145, 125)',
+        },
+        mutedTurquoise: 'rgb(155, 188, 181)',
+        brightPink: 'rgb(246, 98, 128)',
+        mediumTurquoise: 'rgb(87, 168, 159)',
+        lightGray: 'rgb(204, 208, 204)',
+      },
     },
   },
   plugins: [],
-}
+};
 export default config

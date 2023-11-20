@@ -1,102 +1,59 @@
-'use client'
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import LeaveInputForm from '@/components/LeaveInputForm';
-import SuggestionsList from '@/components/SuggestionsList';
-import optimizeLeaveDays from '@/utils/optimizeLeaveDays';
-import { toastError } from '@/utils/toasts';
+'use client';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import heroImage from '../../public/assets/images/landing.jpg'; // Update with the path to your image
 
-interface Country {
-  name: string;
-  countryCode: string;
-}
+const HeroSection = () => {
+  const router = useRouter();
 
-interface Suggestions {
-  days: string[];
-  totalLeaveDays: number;
-  timelineItems: any[];
-  timelineGroups: any[];
-}
+  const colors = {
+    teal: 'rgb(5, 145, 125)',
+    mutedTurquoise: 'rgb(155, 188, 181)',
+    brightPink: 'rgb(246, 98, 128)',
+    mediumTurquoise: 'rgb(87, 168, 159)',
+    lightGray: 'rgb(204, 208, 204)',
+  };
 
-const Home = () => {
-  const [suggestions, setSuggestions] = useState<Suggestions>();
-  const [countries, setCountries] = useState<Country[]>([]);
-  const [leaveDays, setLeaveDays] = useState<number>();
-  const [year, setYear] = useState<number>(new Date().getFullYear());
-  const [startDate, setStartDate] = useState<string>('');
-
-
-  async function fetchPublicHolidays(countryCode: string, year: number) {
-    const res = await fetch(
-      `/api/publicHolidays?countryCode=${countryCode}&year=${year}`
-    );
-    if (!res.ok) {
-      throw new Error('Failed to fetch public holidays');
-    }
-    return await res.json();
-  }
-
-  useEffect(() => {
-    (async function fetchCountries() {
-      try {
-        const res = await fetch('/api/countries');
-        const data = await res.json();
-        setCountries(data);
-      } catch (error:any) {
-        toastError(error.message);
-        console.error(error);
-      }
-    })();
-  }, []);
-
-  const sortedCountries = useMemo(() => {
-    return countries
-      .map((country) => {
-        return {
-          name: country.name,
-          code: country.countryCode,
-        };
-      })
-      .sort((a, b) => a.name.localeCompare(b.name)); // Sort countries alphabetically
-  }, [countries]);
-
-  const handleFormSubmit = useCallback(async (leaveDays: number, country: string, year: number) => {
-    const selectedCountry = countries.find((c) => c.name === country);
-    const countryCode = selectedCountry ? selectedCountry.countryCode : 'US';
-
-    try {
-      const holidays = await fetchPublicHolidays(countryCode, year);
-      setSuggestions(optimizeLeaveDays(holidays, leaveDays, startDate));
-    } catch (error: any) {
-      toastError(error.message);
-      console.error(error.message);
-    }
-  }, [countries]);
-
+  const gradientBackground = `linear-gradient(to right, ${colors.mutedTurquoise}, ${colors.mediumTurquoise})`;
   return (
-    <div className="container mx-auto px-4">
-      <h1 className="text-xl font-bold my-6">Annual Leave Planner</h1>
-      <LeaveInputForm
-        onSubmit={handleFormSubmit}
-        countries={sortedCountries}
-        //@ts-ignore
-        leaveDays={leaveDays}
-        year={year}
-        setLeaveDays={setLeaveDays}
-        setYear={setYear}
-        setStartDate={setStartDate}
-        startDate={startDate}
-      />
-      {suggestions?.days && (
-        <SuggestionsList
-          suggestions={suggestions?.days ?? []}
-          //@ts-ignore
-          leaveDays={leaveDays}
-          year={year}
-          totalLeaveDays={suggestions?.totalLeaveDays ?? 0}
+    <div className="flex flex-col md:flex-row items-center">
+      <div
+        style={{ background: gradientBackground }}
+        className="md:w-1/2 h-screen flex items-center justify-center text-white p-8"
+      >
+        <div className="space-y-4 text-center md:text-left">
+          <h1
+            className="text-4xl font-bold md:text-7xl"
+            style={{ color: colors.brightPink }}
+          >
+            Leave Maximizer
+          </h1>
+          <p className="text-xl" style={{ color: colors.teal }}>
+            Maximize your leave days efficiently
+          </p>
+          <button
+            onClick={() => router.push('/calculate')}
+            className="px-6 py-2 rounded-md shadow transition"
+            style={{
+              backgroundColor: colors.brightPink,
+              color: '#FFFFFF',
+            }}
+          >
+            Calculate Your Leave
+          </button>
+        </div>
+      </div>
+      <div className="relative md:w-1/2 h-screen">
+        <Image
+          src={heroImage}
+          alt="Vacation"
+          layout="fill"
+          objectFit="cover"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-      )}
+      </div>
     </div>
   );
 };
 
-export default Home;
+export default HeroSection;
