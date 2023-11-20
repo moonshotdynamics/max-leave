@@ -8,7 +8,7 @@ import logo from '../../public/assets/images/landing.png'
 
 const navigation = [
   { name: 'Home', href: '/' },
-  { name: 'Calculate', href: '/calculate' },
+  { name: 'Optimize leave', href: '/calculate' },
   { name: 'About', href: '/about' },
 ];
 
