@@ -81,9 +81,9 @@ const SuggestionsList: React.FC<SuggestionsListProps> = ({
         </table>
       </div>
 
-      <p className="mt-5">
+      {/* <p className="mt-5">
         {`As a result of taking the following leave days, you have optimized your leave days from ${leaveDays} days to a total of ${totalLeaveDays} days for the year.`}
-      </p>
+      </p> */}
     </div>
   );
 };

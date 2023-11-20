@@ -13,7 +13,8 @@ export default function optimizeLeaveDays(
   publicHolidays: PublicHoliday[],
   availableLeaveDays: number,
   startDate: string
-): OptimizeLeaveDaysResult {
+): OptimizeLeaveDaysResult | null {
+  
   // Helper functions
   const startOptimizationDate = new Date(startDate);
   const formatDate = (date: Date) =>
@@ -81,7 +82,7 @@ export default function optimizeLeaveDays(
     }
     while (
       availableLeaveDays > 0 &&
-      dayAfter >= startOptimizationDate && // Skip days before the start date
+      dayAfter >= startOptimizationDate && // Skip days before the start date 
       !isWeekend(dayAfter) &&
       !isPublicHoliday(dayAfter)
     ) {

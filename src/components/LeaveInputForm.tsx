@@ -9,6 +9,9 @@ interface LeaveInputFormProps {
   setYear(year: number): void;
   startDate: string;
   setStartDate(startDate: string): void;
+  startDateRef: {
+    current: string
+  }
 }
 
 const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
@@ -19,7 +22,8 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
   year,
   setYear,
   startDate,
-  setStartDate
+  setStartDate,
+  startDateRef
 }) => {
   const [country, setCountry] = useState<string>('');
   const [leaveDaysError, setLeaveDaysError] = useState<string>('');
@@ -43,6 +47,7 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   const year = startDate.getFullYear();
   setYear(year);
   setStartDate(e.target.value);
+  startDateRef.current = e.target.value;
 
   const currentYear = new Date().getFullYear();
   if (year < currentYear) {
@@ -72,7 +77,7 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           How many leave days do you have?
         </label>
         <input
-          type="number"
+          type="text"
           id="leaveDays"
           value={leaveDays}
           onChange={handleLeaveDaysChange}
@@ -128,7 +133,7 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
       <button
         type="submit"
-        className={`mt-2 p-2 border border-transparent text-sm font-medium rounded-md text-white bg-brightPink hover:bg-lightPink focus:outline-none focus:border-indigo-700 focus:ring focus:ring-indigo-200 active:bg-indigo-700 transition ${
+        className={`mt-2 p-2 border border-transparent text-sm font-medium rounded-md text-white bg-brightPink hover:bg-lightPink focus:outline-none focus:border-indigo-700 focus:ring focus:ring-indigo-200 active:bg-brightPink transition ${
           isSubmitDisabled ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         disabled={isSubmitDisabled}

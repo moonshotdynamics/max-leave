@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import LeaveInputForm from '@/components/LeaveInputForm';
 import SuggestionsList from '@/components/SuggestionsList';
@@ -19,11 +19,12 @@ interface Suggestions {
 }
 
 const Home = () => {
-  const [suggestions, setSuggestions] = useState<Suggestions>();
+  const [suggestions, setSuggestions] = useState<Suggestions | null >();
   const [countries, setCountries] = useState<Country[]>([]);
   const [leaveDays, setLeaveDays] = useState<number>();
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [startDate, setStartDate] = useState<string>('');
+  const startDateRef = useRef('')
 
   async function fetchPublicHolidays(countryCode: string, year: number) {
     const res = await fetch(
@@ -65,8 +66,9 @@ const Home = () => {
       const countryCode = selectedCountry ? selectedCountry.countryCode : 'US';
 
       try {
+        console.log(startDateRef.current, 'THIS IS THE START DATE');
         const holidays = await fetchPublicHolidays(countryCode, year);
-        setSuggestions(optimizeLeaveDays(holidays, leaveDays, startDate));
+        setSuggestions(optimizeLeaveDays(holidays, leaveDays, startDateRef.current));
       } catch (error: any) {
         toastError(error.message);
         console.error(error.message);
@@ -88,8 +90,13 @@ const Home = () => {
         setYear={setYear}
         setStartDate={setStartDate}
         startDate={startDate}
+        startDateRef={startDateRef}
+
+        
+
       />
-      {suggestions?.days && (
+      {/* @ts-ignore */}
+      {suggestions?.days?.length > 0 && (
         <SuggestionsList
           suggestions={suggestions?.days ?? []}
           //@ts-ignore
