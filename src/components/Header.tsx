@@ -21,7 +21,7 @@ const Header = () => {
   return (
     <Popover
       as="header"
-      className="bg-gradient-to-r from-cyan-500 to-blue-500 shadow-sm"
+      className="bg-gradient-to-r from-mediumTurquoise to-mutedTurquoise text-white"
     >
       {({ open }) => (
         <>
