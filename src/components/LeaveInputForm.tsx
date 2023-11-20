@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from 'react';
 
 interface LeaveInputFormProps {
-  onSubmit: (leaveDays: number, country: string, year: number, startDate: string) => void;
+  onSubmit: (leaveDays: number, country: string, startDate: string, endDate: string) => void;
   countries: { name: string; code: string }[];
   leaveDays: number;
   setLeaveDays(leaveDays: number): void;
@@ -11,7 +11,12 @@ interface LeaveInputFormProps {
   setStartDate(startDate: string): void;
   startDateRef: {
     current: string
+  };
+  endDateRef: {
+    current: string
   }
+  endDate: string;
+  setEndDate(endDate: string): void;
 }
 
 const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
@@ -23,7 +28,10 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
   setYear,
   startDate,
   setStartDate,
-  startDateRef
+  startDateRef,
+  endDateRef,
+  endDate,
+  setEndDate
 }) => {
   const [country, setCountry] = useState<string>('');
   const [leaveDaysError, setLeaveDaysError] = useState<string>('');
@@ -56,12 +64,25 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setYearError('');
   }
 };
+  
+  const handleEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    endDateRef.current = e.target.value;
+    const currentYear = new Date().getFullYear();
+    setEndDate(e.target.value);
+    if (year > currentYear) {
+      setYearError('Year must be greater than the current year.');
+    }
+    else {
+      setYearError('')
+    }
+  }
+
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     if (leaveDaysError === '' && yearError === '') {
-      onSubmit(leaveDays, country, year, startDate);
+      onSubmit(leaveDays, country, startDate, endDate);
     }
   };
 
@@ -90,23 +111,44 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         )}
       </div>
 
-      <div>
-        <label
-          htmlFor="startDate"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Start Date
-        </label>
-        <input
-          type="date"
-          id="startDate"
-          value={startDate}
-          onChange={handleYearChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-        {yearError && (
-          <p className="text-red-500 text-xs italic">{yearError}</p>
-        )}
+      <div className="flex justify-between space-x-4">
+        <div className="flex-1">
+          <label
+            htmlFor="startDate"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Start Date
+          </label>
+          <input
+            type="date"
+            id="startDate"
+            value={startDate}
+            onChange={handleYearChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+          {yearError && (
+            <p className="text-red-500 text-xs italic">{yearError}</p>
+          )}
+        </div>
+
+        <div className="flex-1">
+          <label
+            htmlFor="endDate"
+            className="block text-sm font-medium text-gray-700"
+          >
+            End Date
+          </label>
+          <input
+            type="date"
+            id="endDate"
+            value={endDate}
+            onChange={handleEndDate}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+          {yearError && (
+            <p className="text-red-500 text-xs italic">{yearError}</p>
+          )}
+        </div>
       </div>
 
       <div>

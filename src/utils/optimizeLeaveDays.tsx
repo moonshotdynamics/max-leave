@@ -12,11 +12,13 @@ interface OptimizeLeaveDaysResult {
 export default function optimizeLeaveDays(
   publicHolidays: PublicHoliday[],
   availableLeaveDays: number,
-  startDate: string
+  startDate: string,
+  endDate: string
 ): OptimizeLeaveDaysResult | null {
   
   // Helper functions
   const startOptimizationDate = new Date(startDate);
+  const endOptimizationDate = new Date(endDate);
   const formatDate = (date: Date) =>
     `${date.toLocaleDateString('en-US', {
       weekday: 'long',
@@ -69,27 +71,29 @@ export default function optimizeLeaveDays(
     // Check the days before and after the group
     let dayBefore = addDays(firstHoliday, -1);
     let dayAfter = addDays(lastHoliday, 1);
-    while (
-      availableLeaveDays > 0 &&
-      dayBefore >= startOptimizationDate && // Skip days before the start date
-      !isWeekend(dayBefore) &&
-      !isPublicHoliday(dayBefore) &&
-      !(dayBefore.getDay() === 5 && firstHoliday.getDay() === 6)
-    ) {
-      optimizedDaysOff.push(dayBefore);
-      availableLeaveDays--;
-      dayBefore = addDays(dayBefore, -1); // Move to the previous day
-    }
-    while (
-      availableLeaveDays > 0 &&
-      dayAfter >= startOptimizationDate && // Skip days before the start date 
-      !isWeekend(dayAfter) &&
-      !isPublicHoliday(dayAfter)
-    ) {
-      optimizedDaysOff.push(dayAfter);
-      availableLeaveDays--;
-      dayAfter = addDays(dayAfter, 1); // Move to the next day
-    }
+  while (
+    availableLeaveDays > 0 &&
+    dayBefore >= startOptimizationDate && // Skip days before the start date
+    dayBefore <= endOptimizationDate && // Skip days after the end date
+    !isWeekend(dayBefore) &&
+    !isPublicHoliday(dayBefore) &&
+    !(dayBefore.getDay() === 5 && firstHoliday.getDay() === 6)
+  ) {
+    optimizedDaysOff.push(dayBefore);
+    availableLeaveDays--;
+    dayBefore = addDays(dayBefore, -1); // Move to the previous day
+  }
+  while (
+    availableLeaveDays > 0 &&
+    dayAfter >= startOptimizationDate && // Skip days before the start date
+    dayAfter <= endOptimizationDate && // Skip days after the end date
+    !isWeekend(dayAfter) &&
+    !isPublicHoliday(dayAfter)
+  ) {
+    optimizedDaysOff.push(dayAfter);
+    availableLeaveDays--;
+    dayAfter = addDays(dayAfter, 1); // Move to the next day
+  }
   }
 
   // Calculate totalLeaveDays after excluding days before the start date

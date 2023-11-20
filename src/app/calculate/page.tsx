@@ -24,16 +24,27 @@ const Home = () => {
   const [leaveDays, setLeaveDays] = useState<number>();
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [startDate, setStartDate] = useState<string>('');
-  const startDateRef = useRef('')
+  const [endDate, setEndDate] = useState<string>('');
+  const startDateRef = useRef('');
+  const endDateRef = useRef('');
 
-  async function fetchPublicHolidays(countryCode: string, year: number) {
-    const res = await fetch(
-      `/api/publicHolidays?countryCode=${countryCode}&year=${year}`
-    );
-    if (!res.ok) {
-      throw new Error('Failed to fetch public holidays');
+  async function fetchPublicHolidays(
+    countryCode: string,
+    startYear: number,
+    endYear: number
+  ) {
+    let allHolidays : any = [];
+    for (let year = startYear; year <= endYear; year++) {
+      const res = await fetch(
+        `/api/publicHolidays?countryCode=${countryCode}&year=${year}`
+      );
+      if (!res.ok) {
+        throw new Error('Failed to fetch public holidays');
+      }
+      const holidays = await res.json();
+      allHolidays = [...allHolidays, ...holidays];
     }
-    return await res.json();
+    return allHolidays;
   }
 
   useEffect(() => {
@@ -61,14 +72,26 @@ const Home = () => {
   }, [countries]);
 
   const handleFormSubmit = useCallback(
-    async (leaveDays: number, country: string, year: number) => {
+    async (
+      leaveDays: number,
+      country: string,
+      startDate: string,
+      endDate: string
+    ) => {
       const selectedCountry = countries.find((c) => c.name === country);
       const countryCode = selectedCountry ? selectedCountry.countryCode : 'US';
+      const startYear = new Date(startDate).getFullYear();
+      const endYear = new Date(endDate).getFullYear();
 
       try {
-        console.log(startDateRef.current, 'THIS IS THE START DATE');
-        const holidays = await fetchPublicHolidays(countryCode, year);
-        setSuggestions(optimizeLeaveDays(holidays, leaveDays, startDateRef.current));
+        const holidays = await fetchPublicHolidays(
+          countryCode,
+          startYear,
+          endYear
+        );
+        setSuggestions(
+          optimizeLeaveDays(holidays, leaveDays, startDate, endDate)
+        );
       } catch (error: any) {
         toastError(error.message);
         console.error(error.message);
@@ -91,6 +114,9 @@ const Home = () => {
         setStartDate={setStartDate}
         startDate={startDate}
         startDateRef={startDateRef}
+        endDateRef={endDateRef}
+        endDate={endDate}
+        setEndDate={setEndDate}
 
         
 

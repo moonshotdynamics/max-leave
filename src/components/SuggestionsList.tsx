@@ -43,7 +43,7 @@ const SuggestionsList: React.FC<SuggestionsListProps> = ({
       </button> */}
 
       <p>
-        {`To optimize your ${leaveDays} leave days for ${year}, I recommend you take the following days off: `}
+        {`To optimize your ${leaveDays} leave days, I recommend you take the following days off: `}
       </p>
 
       {/* Mobile layout: Each suggestion in its own row */}
