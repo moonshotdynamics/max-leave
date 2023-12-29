@@ -31,6 +31,7 @@ const Home = () => {
   const [endDate, setEndDate] = useState<string>(formattedLastDayOfYear);
   const startDateRef = useRef('');
   const endDateRef = useRef('');
+  const [publicHolidays, setPublicHolidays] = useState<any[]>([]);
 
   async function fetchPublicHolidays(
     countryCode: string,
@@ -48,6 +49,7 @@ const Home = () => {
       const holidays = await res.json();
       allHolidays = [...allHolidays, ...holidays];
     }
+    setPublicHolidays(allHolidays)
     return allHolidays;
   }
 
@@ -133,6 +135,7 @@ const Home = () => {
           leaveDays={leaveDays}
           year={year}
           totalLeaveDays={suggestions?.totalLeaveDays ?? 0}
+          publicHolidays={publicHolidays}
         />
       )}
     </div>

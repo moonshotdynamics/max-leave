@@ -86,7 +86,7 @@ const handleEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
   };
 
     const isSubmitDisabled =
-      leaveDaysError !== '' || yearError !== '' || endDateError !== '' || leaveDays === 0 || leaveDays === undefined;
+      leaveDaysError !== '' || yearError !== '' || endDateError !== '' || leaveDays === 0 || leaveDays === undefined || country === undefined || country === '';
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
