@@ -180,7 +180,7 @@ const handleEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
         }`}
         disabled={isSubmitDisabled}
       >
-        Calculate Best Leave Days
+        Optimize
       </button>
     </form>
   );
