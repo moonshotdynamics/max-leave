@@ -9,7 +9,7 @@ const Footer = () => {
           </p>
 
           <a
-            href="https://www.buymeacoffee.com/isaac7"
+            href="https://www.buymeacoffee.com/genuwize"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-white hover:text-yellow-300 transition-colors duration-300"
