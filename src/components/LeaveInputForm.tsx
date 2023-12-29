@@ -38,20 +38,18 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
   const [leaveDaysError, setLeaveDaysError] = useState<string>('');
   const [yearError, setYearError] = useState<string>('');
 
-  // Get current date and last day of the year
-  const currentDate = new Date();
-  const lastDayOfYear = new Date(currentDate.getFullYear(), 11, 31);
   
-
   const handleLeaveDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     setLeaveDays(value);
 
-    if (value <= 0) {
-      setLeaveDaysError('Leave days must be greater than 0.');
-    } else {
-      setLeaveDaysError('');
-    }
+   if (value <= 0) {
+     setLeaveDaysError('Leave days must be greater than 0.');
+   } else if (isNaN(value)) {
+     setLeaveDaysError('Leave days must be a number.');
+   } else {
+     setLeaveDaysError('');
+   }
   };
 
 const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +86,7 @@ const handleEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
   };
 
     const isSubmitDisabled =
-      leaveDaysError !== '' || yearError !== '' || endDateError !== '';
+      leaveDaysError !== '' || yearError !== '' || endDateError !== '' || leaveDays === 0 || leaveDays === undefined;
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
@@ -100,7 +98,7 @@ const handleEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
           How many leave days do you have?
         </label>
         <input
-          type="text"
+          type="number"
           id="leaveDays"
           value={leaveDays}
           onChange={handleLeaveDaysChange}

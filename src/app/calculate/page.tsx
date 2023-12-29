@@ -1,6 +1,5 @@
 'use client';
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import Image from 'next/image';
 import LeaveInputForm from '@/components/LeaveInputForm';
 import SuggestionsList from '@/components/SuggestionsList';
 import optimizeLeaveDays from '@/utils/optimizeLeaveDays';
@@ -22,9 +21,8 @@ const Home = () => {
 
   const currentDate = new Date();
   const lastDayOfYear = new Date(currentDate.getFullYear(), 11, 31);
-
-   const formattedCurrentDate = currentDate.toLocaleDateString('af-ZA');
-   const formattedLastDayOfYear = lastDayOfYear.toLocaleDateString('af-ZA');
+  const formattedCurrentDate = currentDate.toLocaleDateString('af-ZA');
+  const formattedLastDayOfYear = lastDayOfYear.toLocaleDateString('af-ZA');
   const [suggestions, setSuggestions] = useState<Suggestions | null >();
   const [countries, setCountries] = useState<Country[]>([]);
   const [leaveDays, setLeaveDays] = useState<number>();
@@ -33,10 +31,6 @@ const Home = () => {
   const [endDate, setEndDate] = useState<string>(formattedLastDayOfYear);
   const startDateRef = useRef('');
   const endDateRef = useRef('');
-
-  
-
-
 
   async function fetchPublicHolidays(
     countryCode: string,

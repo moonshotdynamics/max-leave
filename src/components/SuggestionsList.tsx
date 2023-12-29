@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface SuggestionsListProps {
   suggestions: string[];
@@ -15,8 +15,33 @@ const SuggestionsList: React.FC<SuggestionsListProps> = ({
   totalLeaveDays,
 }) => {
   const [showGrouped, setShowGrouped] = useState<boolean>(false);
+  const [chunkSize, setChunkSize] = useState<number>(5);
+
+  useEffect(() => {
+    const handleResize = () => {
+      // Set chunk size to 3 for tablet devices (768px to 1023px)
+      if (window.innerWidth >= 641 && window.innerWidth < 1024) {
+        setChunkSize(3);
+      } if (window.innerWidth >= 475 && window.innerWidth < 641) {
+        setChunkSize(2);
+      } else {
+        setChunkSize(5); // Default chunk size for desktop
+      }
+    };
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+
   // Function to chunk the suggestions array for desktop layout
-  const chunkArrayDesktop = (arr: string[], size: number) =>
+  const chunkArray = (arr: string[], size: number) =>
     arr.reduce((chunks, item, index) => {
       const chunkIndex = Math.floor(index / size);
       if (!chunks[chunkIndex]) {
@@ -26,8 +51,8 @@ const SuggestionsList: React.FC<SuggestionsListProps> = ({
       return chunks;
     }, [] as string[][]);
 
-  // Chunk the suggestions into sub-arrays of max 5 items for desktop layout
-  const chunkedSuggestionsDesktop = chunkArrayDesktop(suggestions, 5);
+  // Chunk the suggestions into sub-arrays based on chunkSize
+  const chunkedSuggestions = chunkArray(suggestions, chunkSize);
 
   return (
     <div className="mt-10 py-8">
@@ -65,7 +90,7 @@ const SuggestionsList: React.FC<SuggestionsListProps> = ({
       <div className="hidden sm:block mt-5">
         <table className="min-w-full divide-y divide-gray-200">
           <tbody className="bg-white divide-y divide-gray-200">
-            {chunkedSuggestionsDesktop.map((chunk, rowIndex) => (
+            {chunkedSuggestions.map((chunk, rowIndex) => (
               <tr key={rowIndex}>
                 {chunk.map((day, colIndex) => (
                   <td
