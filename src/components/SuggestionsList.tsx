@@ -30,7 +30,7 @@ const SuggestionsList: React.FC<SuggestionsListProps> = ({
   const chunkedSuggestionsDesktop = chunkArrayDesktop(suggestions, 5);
 
   return (
-    <div className="mt-10">
+    <div className="mt-10 py-8">
       <h3 className="text-lg leading-6 font-medium text-gray-900">
         Suggested Leave Days
       </h3>

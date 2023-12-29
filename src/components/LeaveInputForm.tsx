@@ -34,9 +34,13 @@ const LeaveInputForm: React.FC<LeaveInputFormProps> = ({
   setEndDate
 }) => {
   const [country, setCountry] = useState<string>('');
+  const [endDateError, setEndDateError] = useState<string>('');
   const [leaveDaysError, setLeaveDaysError] = useState<string>('');
   const [yearError, setYearError] = useState<string>('');
 
+  // Get current date and last day of the year
+  const currentDate = new Date();
+  const lastDayOfYear = new Date(currentDate.getFullYear(), 11, 31);
   
 
   const handleLeaveDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,26 +61,23 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   setStartDate(e.target.value);
   startDateRef.current = e.target.value;
 
-  const currentYear = new Date().getFullYear();
-  if (year < currentYear) {
-    setYearError('Year must be the current year or a future year.');
+  if (startDate < new Date()) {
+    setYearError('Start date cannot be in the past.');
   } else {
     setYearError('');
   }
 };
-  
-  const handleEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    endDateRef.current = e.target.value;
-    const currentYear = new Date().getFullYear();
-    setEndDate(e.target.value);
-    if (year > currentYear) {
-      setYearError('Year must be greater than the current year.');
-    }
-    else {
-      setYearError('')
-    }
-  }
 
+const handleEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+  endDateRef.current = e.target.value;
+  const endDate = new Date(e.target.value);
+  setEndDate(e.target.value);
+  if (endDate < new Date(startDateRef.current)) {
+    setEndDateError('End date cannot be before the start date.');
+  } else {
+    setEndDateError('');
+  }
+};
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -86,7 +87,8 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
   };
 
-  const isSubmitDisabled = leaveDaysError !== '' || yearError !== '';
+    const isSubmitDisabled =
+      leaveDaysError !== '' || yearError !== '' || endDateError !== '';
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
@@ -104,7 +106,7 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           onChange={handleLeaveDaysChange}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-lightPink focus:shadow-outline"
           min="0"
-          placeholder="21"
+          placeholder="Number of leave days you have"
         />
         {leaveDaysError && (
           <p className="text-red-500 text-xs italic">{leaveDaysError}</p>
@@ -145,8 +147,8 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             onChange={handleEndDate}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-lightPink focus:shadow-outline"
           />
-          {yearError && (
-            <p className="text-red-500 text-xs italic">{yearError}</p>
+          {endDateError && (
+            <p className="text-red-500 text-xs italic">{endDateError}</p>
           )}
         </div>
       </div>

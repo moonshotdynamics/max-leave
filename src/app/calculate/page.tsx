@@ -19,14 +19,24 @@ interface Suggestions {
 }
 
 const Home = () => {
+
+  const currentDate = new Date();
+  const lastDayOfYear = new Date(currentDate.getFullYear(), 11, 31);
+
+   const formattedCurrentDate = currentDate.toLocaleDateString('af-ZA');
+   const formattedLastDayOfYear = lastDayOfYear.toLocaleDateString('af-ZA');
   const [suggestions, setSuggestions] = useState<Suggestions | null >();
   const [countries, setCountries] = useState<Country[]>([]);
   const [leaveDays, setLeaveDays] = useState<number>();
   const [year, setYear] = useState<number>(new Date().getFullYear());
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>(formattedCurrentDate);
+  const [endDate, setEndDate] = useState<string>(formattedLastDayOfYear);
   const startDateRef = useRef('');
   const endDateRef = useRef('');
+
+  
+
+
 
   async function fetchPublicHolidays(
     countryCode: string,
@@ -101,7 +111,7 @@ const Home = () => {
   );
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 pb-16">
       <h1 className="text-xl font-bold my-6">Annual Leave Planner</h1>
       <LeaveInputForm
         onSubmit={handleFormSubmit}
