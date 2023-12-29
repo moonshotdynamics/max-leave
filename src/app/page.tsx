@@ -35,7 +35,7 @@ const HeroSection = () => {
             onClick={() => router.push('/calculate')}
             className="px-6 py-2 rounded-md shadow transition hover:bg-lightPink bg-brightPink text-white"
           >
-            Calculate Your Leave
+            Optimize Your Leave
           </button>
         </div>
       </div>
@@ -64,7 +64,7 @@ const HeroSection = () => {
               onClick={() => router.push('/calculate')}
               className="px-6 py-2 rounded-md shadow transition hover:bg-lightPink bg-brightPink text-white"
             >
-              Calculate Your Leave
+              Optimize Your Leave
             </button>
           </div>
         </div>
